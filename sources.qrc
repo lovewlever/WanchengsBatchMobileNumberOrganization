@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/json">
+        <file>material-theme.json</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>images/ic_hbzx_11.png</file>
+    </qresource>
+</RCC>
