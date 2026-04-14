@@ -25,6 +25,8 @@ qt_add_qml_module(appWanchengsBatchMobileNumberOrganization
         SOURCES InstanceTheme.h InstanceTheme.cpp
         SOURCES PhoneNumberImportrer.h PhoneNumberImportrer.cpp
         SOURCES PhoneNumberListModel.h PhoneNumberListModel.cpp
+        SOURCES CSVPhoneLocationLoader.h CSVPhoneLocationLoader.cpp
+        SOURCES Structs.h Structs.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

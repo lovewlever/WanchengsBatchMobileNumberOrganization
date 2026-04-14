@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <PhoneNumberListModel.h>
+#include <CSVPhoneLocationLoader.h>
 
 class PhoneNumberImportrer : public QObject
 {
@@ -22,10 +23,15 @@ private:
 
     Q_PROPERTY(QString topMsg READ getTopMsg WRITE setTopMsg NOTIFY topMsgChanged FINAL)
 
+
+
+
+
+    std::unique_ptr<CSVPhoneLocationLoader> csvPhoneLocationLoaderPtr{nullptr};
+
 public:
     explicit PhoneNumberImportrer(QObject *parent = nullptr);
     ~PhoneNumberImportrer();
-
 
     /**
      * 导入手机号

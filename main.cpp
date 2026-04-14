@@ -21,7 +21,5 @@ int main(int argc, char *argv[])
 
     engine.loadFromModule("WanchengsBatchMobileNumberOrganization", "Main");
 
-
-
     return QCoreApplication::exec();
 }

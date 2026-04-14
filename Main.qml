@@ -123,7 +123,7 @@ Window {
             ListView {
                 anchors.margins: 8
                 anchors.fill: parent
-                orientation: Qt.Horizontal
+                orientation: Qt.Vertical
                 model: objPhoneNumberImporter.phoneNumberListModelPtr
                 clip: true
                 delegate: Rectangle {
@@ -136,7 +136,7 @@ Window {
 
                     Text {
                         id: idTextPhone
-                        text: qsTr(phone.split("").join("\n"))
+                        text: qsTr(phone)
                         color: InstanceTheme.onSurface
                         leftPadding: 8
                         rightPadding: 8
@@ -158,13 +158,6 @@ Window {
             Layout.preferredHeight: 1
         }
 
-        Item {
-            Layout.fillHeight: true
-        }
-
-        Text {
-            text: qsTr("导出手机号：")
-        }
         RowLayout {
             UnionButton {
                 btnText: "按号段导出"
@@ -185,6 +178,7 @@ Window {
                 Layout.preferredHeight: 35
             }
         }
+
     }
 
 }

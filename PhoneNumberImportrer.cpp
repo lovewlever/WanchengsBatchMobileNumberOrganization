@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QUrl>
 #include <fstream>
+#include <thread>
 
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
@@ -45,8 +46,16 @@ void PhoneNumberImportrer::setTopMsg(const QString &newTopMsg)
 }
 
 PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent): QObject(parent),
-    phoneNumberListModelPtr{new PhoneNumberListModel(parent)}
+    phoneNumberListModelPtr{new PhoneNumberListModel(parent)},
+    csvPhoneLocationLoaderPtr{std::make_unique<CSVPhoneLocationLoader>()}
 {
+    QPointer pointer{this};
+    std::thread{[pointer]() {
+            if (!pointer.isNull()) {
+            const auto thizz = pointer.get();
+                thizz->csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
+            }
+    }}.detach();
 }
 
 PhoneNumberImportrer::~PhoneNumberImportrer()

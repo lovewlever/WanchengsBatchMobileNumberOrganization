@@ -4,5 +4,6 @@
     </qresource>
     <qresource prefix="/">
         <file>images/ic_hbzx_11.png</file>
+        <file>phone_location.csv</file>
     </qresource>
 </RCC>
