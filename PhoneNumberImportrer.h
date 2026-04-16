@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 #include <PhoneNumberListModel.h>
 #include <CSVPhoneLocationLoader.h>
+#include <TextFileLoader.h>
 
 class PhoneNumberImportrer : public QObject
 {
@@ -27,7 +28,8 @@ private:
 
 
 
-    std::unique_ptr<CSVPhoneLocationLoader> csvPhoneLocationLoaderPtr{nullptr};
+    std::shared_ptr<CSVPhoneLocationLoader> csvPhoneLocationLoaderPtr{nullptr};
+    std::shared_ptr<TextFileLoader> textFileLoader{nullptr};
 
 public:
     explicit PhoneNumberImportrer(QObject *parent = nullptr);

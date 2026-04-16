@@ -1,6 +1,7 @@
 #include "PhoneNumberListModel.h"
 #include <random>
 
+
 PhoneNumberListModel::PhoneNumberListModel(QObject *parent)
     : QAbstractListModel(parent)
 {}
@@ -19,10 +20,16 @@ QVariant PhoneNumberListModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
+    const auto PhoneListModel = phoneDatas[index.row()];
+    const auto LocationInfo = PhoneListModel.locationInfo;
+    std::string provinceCarrier{"未知地区"};
 
+    if (LocationInfo != nullptr) {
+        provinceCarrier = LocationInfo->province + " - " + LocationInfo->carrier;
+    }
     switch (role) {
     case Phone:
-        return QString::fromStdString(phoneDatas[index.row()]);
+        return QString::fromStdString(PhoneListModel.phone + " - " + provinceCarrier);
     default:
         break;
     }
@@ -39,14 +46,16 @@ void PhoneNumberListModel::phoneDisorder()
     endResetModel();
 }
 
-void PhoneNumberListModel::setPhoneDatas(const std::vector<std::string> &&phoneDatas)
+void PhoneNumberListModel::setPhoneDatas(std::vector<PhoneListModel> &&phoneDatas)
 {
     beginResetModel();
+    std::vector<PhoneListModel> swap{};
+    this->phoneDatas.swap(swap);
     this->phoneDatas = std::move(phoneDatas);
     endResetModel();
 }
 
-std::vector<std::string> &PhoneNumberListModel::getPhoneDatas()
+std::vector<PhoneListModel> &PhoneNumberListModel::getPhoneDatas()
 {
     return this->phoneDatas;
 }
@@ -54,13 +63,13 @@ std::vector<std::string> &PhoneNumberListModel::getPhoneDatas()
 void PhoneNumberListModel::deduplicate()
 {
     beginResetModel();
-    std::unordered_set<std::string> seen;
-    std::vector<std::string> result;
+    std::unordered_set<std::string_view> seen;
+    std::vector<PhoneListModel> result;
 
     result.reserve(phoneDatas.size());
 
     for (const auto& item : phoneDatas) {
-        if (seen.insert(item).second) {  // 第一次出现
+        if (seen.insert(item.phone).second) {  // 第一次出现
             result.push_back(item);
         }
     }
@@ -97,18 +106,18 @@ std::string normalize(std::string s)
 
 void PhoneNumberListModel::filterPhones()
 {
-    beginResetModel();
-    std::vector<std::string> result;
-    result.reserve(phoneDatas.size());
+    // beginResetModel();
+    // std::vector<std::string> result;
+    // result.reserve(phoneDatas.size());
 
-    for (auto& item : phoneDatas) {
-        auto s = normalize(item);
+    // for (auto& item : phoneDatas) {
+    //     auto s = normalize(item);
 
-        if (isValidPhone(s)) {
-            result.push_back(s);
-        }
-    }
+    //     if (isValidPhone(s)) {
+    //         result.push_back(s);
+    //     }
+    // }
 
-    phoneDatas = std::move(result);
-    endResetModel();
+    // phoneDatas = std::move(result);
+    // endResetModel();
 }

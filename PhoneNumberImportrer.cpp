@@ -3,6 +3,7 @@
 #include <QUrl>
 #include <fstream>
 #include <thread>
+#include <QFile>
 
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
@@ -47,7 +48,8 @@ void PhoneNumberImportrer::setTopMsg(const QString &newTopMsg)
 
 PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent): QObject(parent),
     phoneNumberListModelPtr{new PhoneNumberListModel(parent)},
-    csvPhoneLocationLoaderPtr{std::make_unique<CSVPhoneLocationLoader>()}
+    csvPhoneLocationLoaderPtr{std::make_shared<CSVPhoneLocationLoader>()},
+    textFileLoader{std::make_shared<TextFileLoader>()}
 {
     QPointer pointer{this};
     std::thread{[pointer]() {
@@ -69,17 +71,13 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
     phones.reserve(100000);
     QUrl qurl = variant.toUrl();
     const auto path = qurl.toLocalFile();
-    std::ifstream ifs{path.toStdString(), std::ios_base::in};
-    if (!ifs.is_open()) {
-        qDebug() << "文件无法打开！";
-        return;
-    }
-    std::string line;
-    while(std::getline(ifs, line)) {
-        phones.emplace_back(line);
-    }
-    setPhoneNumber(phones.size());
-    this->phoneNumberListModelPtr->setPhoneDatas(std::move(phones));
+
+
+    textFileLoader->openFile(path);
+    // auto StrintgList = fileLoader.getPhonesByPage(0);
+    auto StrintgList = textFileLoader->loadAllPhones(csvPhoneLocationLoaderPtr);
+    setPhoneNumber(StrintgList.size());
+    this->phoneNumberListModelPtr->setPhoneDatas(std::move(StrintgList));
     qDebug() << "导入数量：" << phones.size();
 }
 

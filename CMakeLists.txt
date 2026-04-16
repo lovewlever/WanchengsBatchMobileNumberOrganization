@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
+
 project(WanchengsBatchMobileNumberOrganization VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTORCC ON)
@@ -27,6 +28,7 @@ qt_add_qml_module(appWanchengsBatchMobileNumberOrganization
         SOURCES PhoneNumberListModel.h PhoneNumberListModel.cpp
         SOURCES CSVPhoneLocationLoader.h CSVPhoneLocationLoader.cpp
         SOURCES Structs.h Structs.cpp
+        SOURCES TextFileLoader.h TextFileLoader.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

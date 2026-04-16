@@ -6,7 +6,7 @@ import InstanceTheme
 
 Window {
     id: window
-    width: 1024
+    width: 640
     height: 640
     visible: true
     title: qsTr("WanchengsBatchMobileNumberOrganization")
@@ -130,9 +130,7 @@ Window {
                     height: 30
                     width: idTextPhone.width
                     color: "transparent"
-                    Component.onCompleted: function() {
-                        console.log(phone)
-                    }
+
 
                     Text {
                         id: idTextPhone

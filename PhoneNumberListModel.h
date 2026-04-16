@@ -2,6 +2,7 @@
 #define PHONENUMBERLISTMODEL_H
 
 #include <QAbstractListModel>
+#include <Structs.h>
 
 class PhoneNumberListModel : public QAbstractListModel
 {
@@ -25,13 +26,13 @@ public:
     void filterPhones();
 
 
-    void setPhoneDatas(const std::vector<std::string>&& phoneDatas);
+    void setPhoneDatas(std::vector<PhoneListModel> &&phoneDatas);
 
-    std::vector<std::string>& getPhoneDatas();
+    std::vector<PhoneListModel>& getPhoneDatas();
 
 private:
 
-    std::vector<std::string> phoneDatas;
+    std::vector<PhoneListModel> phoneDatas;
 
     enum RoleNames {
         Phone
