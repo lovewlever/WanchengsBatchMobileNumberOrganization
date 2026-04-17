@@ -3,6 +3,7 @@
 #include <QUrl>
 #include <thread>
 #include <QFile>
+#include <InstanceDialog.h>
 
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
@@ -16,8 +17,6 @@ void PhoneNumberImportrer::setPhoneNumberListModelPtr(PhoneNumberListModel *newP
     phoneNumberListModelPtr = newPhoneNumberListModelPtr;
     emit phoneNumberListModelPtrChanged();
 }
-
-
 
 int64_t PhoneNumberImportrer::getPhoneNumber() const
 {
@@ -45,18 +44,21 @@ void PhoneNumberImportrer::setTopMsg(const QString &newTopMsg)
     emit topMsgChanged();
 }
 
-PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent): QObject(parent),
-    phoneNumberListModelPtr{new PhoneNumberListModel(parent)},
-    csvPhoneLocationLoaderPtr{std::make_shared<CSVPhoneLocationLoader>()},
-    textFileLoader{std::make_shared<TextFileLoader>()}
+PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent) : QObject(parent),
+                                                              phoneNumberListModelPtr{new PhoneNumberListModel(parent)},
+                                                              csvPhoneLocationLoaderPtr{std::make_shared<CSVPhoneLocationLoader>()},
+                                                              textFileLoader{std::make_shared<TextFileLoader>()}
 {
     QPointer pointer{this};
-    std::thread{[pointer]() {
-            if (!pointer.isNull()) {
-            const auto thizz = pointer.get();
-                thizz->csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
-            }
-    }}.detach();
+    std::thread{[pointer]()
+                {
+                    if (!pointer.isNull())
+                    {
+                        const auto thizz = pointer.get();
+                        thizz->csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
+                    }
+                }}
+        .detach();
 }
 
 PhoneNumberImportrer::~PhoneNumberImportrer()
@@ -66,18 +68,27 @@ PhoneNumberImportrer::~PhoneNumberImportrer()
 
 void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
 {
-    std::vector<std::string> phones{};
-    phones.reserve(100000);
-    QUrl qurl = variant.toUrl();
-    const auto path = qurl.toLocalFile();
+    InstanceDialog::getInstance()->setLoadingDialogShow(true);
 
+    QObject::connect(this, &PhoneNumberImportrer::signalPhoneLoaded, this, [this] () {
+        this->phoneNumberListModelPtr->setPhoneDatas(std::move(phonesTemp));
+    });
+    
+    std::thread{[&variant, this]()
+                {
+                    QUrl qurl = variant.toUrl();
+                    const auto path = qurl.toLocalFile();
 
-    textFileLoader->openFile(path);
-    // auto StrintgList = fileLoader.getPhonesByPage(0);
-    auto StrintgList = textFileLoader->loadAllPhones(csvPhoneLocationLoaderPtr);
-    setPhoneNumber(StrintgList.size());
-    this->phoneNumberListModelPtr->setPhoneDatas(std::move(StrintgList));
-    qDebug() << "导入数量：" << phones.size();
+                    textFileLoader->openFile(path);
+                    std::vector<PhoneListModel> temp{};
+                    phonesTemp.swap(temp);
+                    phonesTemp = textFileLoader->loadAllPhones(csvPhoneLocationLoaderPtr);
+                    setPhoneNumber(phonesTemp.size());
+                    qDebug() << "导入数量：" << phonesTemp.size();
+                    InstanceDialog::getInstance()->setLoadingDialogShow(false);
+                }}
+        .detach();
+    
 }
 
 void PhoneNumberImportrer::cleanPhone()

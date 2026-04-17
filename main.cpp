@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <InstanceTheme.h>
+#include "InstanceDialog.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
 
     const auto instanceTheme = InstanceTheme::getInstance();
     qmlRegisterSingletonInstance<InstanceTheme>("InstanceTheme", 1, 0, "InstanceTheme", instanceTheme);
+    qmlRegisterSingletonInstance<InstanceDialog>("InstanceDialog", 1, 0, "InstanceDialog", InstanceDialog::getInstance());
 
     engine.loadFromModule("WanchengsBatchMobileNumberOrganization", "Main");
 

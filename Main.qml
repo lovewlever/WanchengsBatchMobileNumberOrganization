@@ -180,4 +180,8 @@ Window {
 
     }
 
+
+    LoadingDialog {
+        id: idLoadingDialog
+    }
 }

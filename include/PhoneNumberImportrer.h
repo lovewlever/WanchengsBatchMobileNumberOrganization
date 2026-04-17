@@ -31,6 +31,8 @@ private:
     std::shared_ptr<CSVPhoneLocationLoader> csvPhoneLocationLoaderPtr{nullptr};
     std::shared_ptr<TextFileLoader> textFileLoader{nullptr};
 
+    std::vector<PhoneListModel> phonesTemp{};
+
 public:
     explicit PhoneNumberImportrer(QObject *parent = nullptr);
     ~PhoneNumberImportrer();
@@ -79,6 +81,11 @@ signals:
     void phoneNumberListModelPtrChanged();
     void phoneNumberChanged();
     void topMsgChanged();
+
+    /**
+     * 手机号加载成功信号
+     */
+    void signalPhoneLoaded();
 };
 
 #endif // PHONENUMBERIMPORTRER_H
