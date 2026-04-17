@@ -12,6 +12,8 @@ Window {
     title: qsTr("WanchengsBatchMobileNumberOrganization")
     color: InstanceTheme.background
 
+    property var dropAreaColor: "transparent"
+
     PhoneNumberImportrer {
         id: objPhoneNumberImporter
     }
@@ -29,37 +31,35 @@ Window {
 
             FileDialog {
                 id: fileDialog
-                nameFilters: ["Text files (*.txt)"]
-                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-                onAccepted: function() {
-                    objPhoneNumberImporter.importPhoneFile(fileDialog.file)
+                nameFilters: ["Text files (*.txt *.text)"]
+                folder: StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+                onAccepted: function () {
+                    objPhoneNumberImporter.importPhoneFile(fileDialog.file);
                 }
             }
 
             UnionButton {
                 btnText: "导入Text文件"
                 Layout.preferredHeight: 35
-                onClickedX: function() {
-                    fileDialog.open()
-                    console.log("导入Text文件-Click")
+                onClickedX: function () {
+                    fileDialog.open();
+                    console.log("导入Text文件-Click");
                 }
             }
-
-
 
             UnionButton {
                 btnText: "号码乱序"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
-                    objPhoneNumberImporter.phoneDisorder()
+                    objPhoneNumberImporter.phoneDisorder();
                 }
             }
 
             UnionButton {
                 btnText: "去重"
                 Layout.preferredHeight: 35
-                onClickedX: function() {
-                    objPhoneNumberImporter.phoneDeduplication()
+                onClickedX: function () {
+                    objPhoneNumberImporter.phoneDeduplication();
                 }
             }
 
@@ -67,7 +67,7 @@ Window {
                 btnText: "清除非手机号"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
-                    objPhoneNumberImporter.removeNonPhoneNumbers()
+                    objPhoneNumberImporter.removeNonPhoneNumbers();
                 }
             }
 
@@ -75,11 +75,9 @@ Window {
                 btnText: "清空号码"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
-                    objPhoneNumberImporter.cleanPhone()
+                    objPhoneNumberImporter.cleanPhone();
                 }
             }
-
-
         }
 
         Item {
@@ -132,7 +130,6 @@ Window {
                     width: idTextPhone.width
                     color: "transparent"
 
-
                     Text {
                         id: idTextPhone
                         text: qsTr(phone)
@@ -148,7 +145,6 @@ Window {
             text: qsTr("当前原始号码数量：" + objPhoneNumberImporter.phoneNumber)
             color: InstanceTheme.primary
             font.pointSize: 12
-
         }
 
         Rectangle {
@@ -177,11 +173,36 @@ Window {
                 Layout.preferredHeight: 35
             }
         }
-
     }
 
+    Rectangle {
+        color: window.dropAreaColor
+        anchors.fill: parent
+        DropArea {
+            anchors.fill: parent
+            onEntered: function (drag) {
+                window.dropAreaColor = "#7F000000";
+            }
+            onExited: function () {
+                window.dropAreaColor = "transparent";
+            }
+
+            onDropped: function (drag) {
+                window.dropAreaColor = "transparent";
+                let filePaths = ""
+                for (let i = 0; i < drag.urls.length; i++) {
+                    let url = drag.urls[i]
+                    objPhoneNumberImporter.importPhoneFile(url);
+                }
+            }
+        }
+    }
 
     LoadingDialog {
         id: idLoadingDialog
+    }
+
+    CustomReminderDialog {
+
     }
 }

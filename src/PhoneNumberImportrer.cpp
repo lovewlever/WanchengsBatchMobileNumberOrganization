@@ -4,6 +4,8 @@
 #include <thread>
 #include <QFile>
 #include <InstanceDialog.h>
+#include <filesystem>
+#include <regex>
 
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
@@ -49,14 +51,10 @@ PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent) : QObject(parent),
                                                               csvPhoneLocationLoaderPtr{std::make_shared<CSVPhoneLocationLoader>()},
                                                               textFileLoader{std::make_shared<TextFileLoader>()}
 {
-    QPointer pointer{this};
-    std::thread{[pointer]()
+
+    std::thread{[this]()
                 {
-                    if (!pointer.isNull())
-                    {
-                        const auto thizz = pointer.get();
-                        thizz->csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
-                    }
+                   csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
                 }}
         .detach();
 }
@@ -68,6 +66,17 @@ PhoneNumberImportrer::~PhoneNumberImportrer()
 
 void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
 {
+    QUrl qurl = variant.toUrl();
+    const auto path = qurl.toLocalFile().toStdString();
+    std::filesystem::path fsPath{path};
+    const auto extStr = fsPath.extension().string();
+    std::regex regex{R"(\.(txt|text)$)", std::regex::icase};
+    if (!std::regex_search(extStr.begin(), extStr.end(), regex)) {
+        qDebug() << "不支持的文件";
+        InstanceDialog::getInstance()->setReminderDialogShowContent(true, "不支持的文件");
+        return;
+    }
+
     InstanceDialog::getInstance()->setLoadingDialogShow(true);
 
     QObject::connect(this, &PhoneNumberImportrer::signalPhoneLoaded, this, [this] () {
@@ -75,7 +84,7 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
         InstanceDialog::getInstance()->setLoadingDialogShow(false);
     });
     
-    std::thread{[&variant, this]()
+    std::thread{[variant, this]()
                 {
                     QUrl qurl = variant.toUrl();
                     const auto path = qurl.toLocalFile();

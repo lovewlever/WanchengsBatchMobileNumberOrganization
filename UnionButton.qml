@@ -28,8 +28,10 @@ Button {
         text: idUnionBtn.btnText
         color: InstanceTheme.onPrimary
         font.pointSize: 10
+        width: parent.width
         anchors.centerIn: parent
         verticalAlignment: Qt.AlignVCenter
+        horizontalAlignment: Qt.AlignHCenter
     }
 
     onClicked: function () {

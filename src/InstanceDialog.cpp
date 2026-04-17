@@ -1,5 +1,37 @@
 #include "InstanceDialog.h"
 
+bool InstanceDialog::getReminderDialogShow() const
+{
+    return reminderDialogShow;
+}
+
+void InstanceDialog::setReminderDialogShow(bool newReminderDialogShow)
+{
+    if (reminderDialogShow == newReminderDialogShow)
+        return;
+    reminderDialogShow = newReminderDialogShow;
+    emit reminderDialogShowChanged();
+}
+
+void InstanceDialog::setReminderDialogShowContent(bool newReminderDialogShow, const QString &content)
+{
+    setReminderDialogShow(newReminderDialogShow);
+    setReminderContent(content);
+}
+
+QString InstanceDialog::getReminderContent() const
+{
+    return reminderContent;
+}
+
+void InstanceDialog::setReminderContent(const QString &newReminderContent)
+{
+    if (reminderContent == newReminderContent)
+        return;
+    reminderContent = newReminderContent;
+    emit reminderContentChanged();
+}
+
 InstanceDialog::InstanceDialog(QObject *parent)
     : QObject{parent}
 {}
