@@ -1,6 +1,7 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 #include <string>
+#include <memory>
 
 struct PhonLocationInfo {
     uint32_t prefix;

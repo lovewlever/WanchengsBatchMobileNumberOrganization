@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import InstanceTheme
- import Qt.labs.platform
+import Qt.labs.platform
 
 Window {
     id: window
@@ -78,6 +78,7 @@ Window {
                     objPhoneNumberImporter.cleanPhone()
                 }
             }
+
 
         }
 

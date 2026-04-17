@@ -1,7 +1,6 @@
 #include "PhoneNumberImportrer.h"
 #include <QDebug>
 #include <QUrl>
-#include <fstream>
 #include <thread>
 #include <QFile>
 

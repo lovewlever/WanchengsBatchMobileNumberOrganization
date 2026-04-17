@@ -51,6 +51,7 @@ void CSVPhoneLocationLoader::loadPhoneLocationCSV()
 const std::shared_ptr<PhonLocationInfo> CSVPhoneLocationLoader::getByPrefixPhone(int32_t prefixPhone)
 {
     try {
+        if (prefixPhone < 0) return nullptr;
          return (*phoneLocationDB).at(prefixPhone - MIN_PREFIX);
     } catch (const std::out_of_range& e) {
         return nullptr;

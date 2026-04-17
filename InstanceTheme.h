@@ -4,6 +4,7 @@
 #include <QObject>
 #include <theme.h>
 #include <QColor>
+#include <mutex>
 
 class InstanceTheme : public QObject
 {

@@ -6,7 +6,7 @@ Button {
 
     property string btnText: ""
 
-    signal clickedX()
+    signal clickedX
 
     text: btnText
     leftPadding: 8
@@ -24,7 +24,7 @@ Button {
         }
     }
 
-    onClicked: function() {
-        clickedX()
+    onClicked: function () {
+        clickedX();
     }
 }
