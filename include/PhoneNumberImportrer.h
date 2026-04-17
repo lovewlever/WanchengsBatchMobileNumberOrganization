@@ -6,6 +6,8 @@
 #include <PhoneNumberListModel.h>
 #include <CSVPhoneLocationLoader.h>
 #include <TextFileLoader.h>
+#include <ExportPhoneNumber.h>
+#include <qtmetamacros.h>
 
 class PhoneNumberImportrer : public QObject
 {
@@ -30,6 +32,7 @@ private:
 
     std::shared_ptr<CSVPhoneLocationLoader> csvPhoneLocationLoaderPtr{nullptr};
     std::shared_ptr<TextFileLoader> textFileLoader{nullptr};
+    std::unique_ptr<ExportPhoneNumber> exportPhoneNumberPtr{nullptr};
 
     std::vector<PhoneListModel> phonesTemp{};
 
@@ -67,6 +70,11 @@ public:
      * @return
      */
     Q_INVOKABLE void removeNonPhoneNumbers();
+
+    /**
+     * 按运营商导出
+     */
+    Q_INVOKABLE void exportByRegion();
 
     PhoneNumberListModel *getPhoneNumberListModelPtr() const;
     void setPhoneNumberListModelPtr(PhoneNumberListModel *newPhoneNumberListModelPtr);

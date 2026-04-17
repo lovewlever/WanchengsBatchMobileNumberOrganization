@@ -1,11 +1,14 @@
 #include "PhoneNumberImportrer.h"
 #include <QDebug>
 #include <QUrl>
+#include <memory>
 #include <thread>
 #include <QFile>
 #include <InstanceDialog.h>
 #include <filesystem>
 #include <regex>
+
+
 
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
@@ -49,7 +52,8 @@ void PhoneNumberImportrer::setTopMsg(const QString &newTopMsg)
 PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent) : QObject(parent),
                                                               phoneNumberListModelPtr{new PhoneNumberListModel(parent)},
                                                               csvPhoneLocationLoaderPtr{std::make_shared<CSVPhoneLocationLoader>()},
-                                                              textFileLoader{std::make_shared<TextFileLoader>()}
+                                                              textFileLoader{std::make_shared<TextFileLoader>()},
+                                                              exportPhoneNumberPtr{std::make_unique<ExportPhoneNumber>()}
 {
 
     std::thread{[this]()
@@ -128,4 +132,15 @@ void PhoneNumberImportrer::removeNonPhoneNumbers()
     this->phoneNumberListModelPtr->filterPhones();
     setPhoneNumber(this->phoneNumberListModelPtr->getPhoneDatas().size());
     setTopMsg("已移除非手机号");
+}
+
+
+void PhoneNumberImportrer::exportByRegion()
+{
+    const auto phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
+    if (phoneDatas.empty()) {
+        InstanceDialog::getInstance()->setReminderDialogShowContent(true, "没有可导出的号码");
+        return;
+    }
+    exportPhoneNumberPtr->exportByRegion();
 }
