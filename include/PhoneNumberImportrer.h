@@ -72,9 +72,14 @@ public:
     Q_INVOKABLE void removeNonPhoneNumbers();
 
     /**
-     * 按运营商导出
+     * 按地区导出
      */
     Q_INVOKABLE void exportByRegion();
+
+    /**
+     * 按照运营商导出
+     */
+    Q_INVOKABLE void exportByCarrier();
 
     PhoneNumberListModel *getPhoneNumberListModelPtr() const;
     void setPhoneNumberListModelPtr(PhoneNumberListModel *newPhoneNumberListModelPtr);

@@ -169,6 +169,9 @@ Window {
             UnionButton {
                 btnText: "按照运营商导出"
                 Layout.preferredHeight: 35
+                onClickedX: function () {
+                    objPhoneNumberImporter.exportByCarrier();
+                }
             }
 
             UnionButton {

@@ -144,3 +144,13 @@ void PhoneNumberImportrer::exportByRegion()
     }
     exportPhoneNumberPtr->exportByRegion();
 }
+
+Q_INVOKABLE void PhoneNumberImportrer::exportByCarrier()
+{
+    const auto phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
+    if (phoneDatas.empty()) {
+        InstanceDialog::getInstance()->setReminderDialogShowContent(true, "没有可导出的号码");
+        return;
+    }
+    exportPhoneNumberPtr->exportByCarrier();
+}
