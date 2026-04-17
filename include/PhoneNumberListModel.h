@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <Structs.h>
+#include <functional>
 
 class PhoneNumberListModel : public QAbstractListModel
 {
@@ -18,7 +19,11 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void phoneDisorder();
-    void deduplicate();
+
+    /**
+     * 去重
+     */
+    void deduplicate(std::function<void()> &&doneCallback);
     /**
      * 清除非手机号
      * @brief filterPhones
@@ -37,6 +42,9 @@ private:
     enum RoleNames {
         Phone
     };
+
+signals:
+    void signalDeduplicateSuccessful();
 };
 
 #endif // PHONENUMBERLISTMODEL_H

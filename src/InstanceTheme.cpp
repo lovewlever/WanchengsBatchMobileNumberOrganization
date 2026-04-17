@@ -26,7 +26,12 @@ InstanceTheme::InstanceTheme(QObject *parent)
         const auto isDark = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
 
         this->setPrimary(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.primary : theme.schemes.light.primary})));
+        this->setOnPrimary(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.onPrimary : theme.schemes.light.onPrimary})));
         this->setPrimaryContainer(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.primaryContainer : theme.schemes.light.primaryContainer})));
+        this->setOnPrimaryContainer(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.onPrimaryContainer : theme.schemes.light.onPrimaryContainer})));
+        this->setSecondary(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.secondary : theme.schemes.light.secondary})));
+        this->setSecondaryContainer(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.secondaryContainer : theme.schemes.light.secondaryContainer})));
+        this->setOnSecondaryContainer(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.onSecondaryContainer : theme.schemes.light.onSecondaryContainer})));
         this->setBackground(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.background : theme.schemes.light.background})));
         this->setSurface(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.surface : theme.schemes.light.surface})));
         this->setSurfaceContainer(QColor::fromString(QString::fromStdString({isDark ? theme.schemes.dark.surfaceContainer : theme.schemes.light.surfaceContainer})));
@@ -45,6 +50,71 @@ InstanceTheme* InstanceTheme::getInstance() {
         }
     }
     return InstanceTheme::instance_;
+}
+
+QColor InstanceTheme::getOnPrimary() const
+{
+    return onPrimary;
+}
+
+void InstanceTheme::setOnPrimary(const QColor &newOnPrimary)
+{
+    if (onPrimary == newOnPrimary)
+        return;
+    onPrimary = newOnPrimary;
+    emit onPrimaryChanged();
+}
+
+QColor InstanceTheme::getOnSecondaryContainer() const
+{
+    return onSecondaryContainer;
+}
+
+void InstanceTheme::setOnSecondaryContainer(const QColor &newOnSecondaryContainer)
+{
+    if (onSecondaryContainer == newOnSecondaryContainer)
+        return;
+    onSecondaryContainer = newOnSecondaryContainer;
+    emit onSecondaryContainerChanged();
+}
+
+QColor InstanceTheme::getOnPrimaryContainer() const
+{
+    return onPrimaryContainer;
+}
+
+void InstanceTheme::setOnPrimaryContainer(const QColor &newOnPrimaryContainer)
+{
+    if (onPrimaryContainer == newOnPrimaryContainer)
+        return;
+    onPrimaryContainer = newOnPrimaryContainer;
+    emit onPrimaryContainerChanged();
+}
+
+QColor InstanceTheme::getSecondary() const
+{
+    return secondary;
+}
+
+void InstanceTheme::setSecondary(const QColor &newSecondary)
+{
+    if (secondary == newSecondary)
+        return;
+    secondary = newSecondary;
+    emit secondaryChanged();
+}
+
+QColor InstanceTheme::getSecondaryContainer() const
+{
+    return secondaryContainer;
+}
+
+void InstanceTheme::setSecondaryContainer(const QColor &newSecondaryContainer)
+{
+    if (secondaryContainer == newSecondaryContainer)
+        return;
+    secondaryContainer = newSecondaryContainer;
+    emit secondaryContainerChanged();
 }
 
 QColor InstanceTheme::getOnSurface() const

@@ -72,6 +72,7 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
 
     QObject::connect(this, &PhoneNumberImportrer::signalPhoneLoaded, this, [this] () {
         this->phoneNumberListModelPtr->setPhoneDatas(std::move(phonesTemp));
+        InstanceDialog::getInstance()->setLoadingDialogShow(false);
     });
     
     std::thread{[&variant, this]()
@@ -85,7 +86,7 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
                     phonesTemp = textFileLoader->loadAllPhones(csvPhoneLocationLoaderPtr);
                     setPhoneNumber(phonesTemp.size());
                     qDebug() << "导入数量：" << phonesTemp.size();
-                    InstanceDialog::getInstance()->setLoadingDialogShow(false);
+                    emit signalPhoneLoaded();
                 }}
         .detach();
     
@@ -106,9 +107,11 @@ void PhoneNumberImportrer::phoneDisorder()
 
 void PhoneNumberImportrer::phoneDeduplication()
 {
-    this->phoneNumberListModelPtr->deduplicate();
-    setPhoneNumber(this->phoneNumberListModelPtr->getPhoneDatas().size());
-    setTopMsg("号码已去重处理");
+    this->phoneNumberListModelPtr->deduplicate([this] () {
+        setPhoneNumber(this->phoneNumberListModelPtr->getPhoneDatas().size());
+        setTopMsg("号码已去重处理");
+    });
+    
 }
 
 void PhoneNumberImportrer::removeNonPhoneNumbers()

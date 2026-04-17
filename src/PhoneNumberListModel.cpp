@@ -1,10 +1,13 @@
 #include "PhoneNumberListModel.h"
+#include "InstanceDialog.h"
+#include <chrono>
 #include <random>
-
+#include <thread>
 
 PhoneNumberListModel::PhoneNumberListModel(QObject *parent)
     : QAbstractListModel(parent)
-{}
+{
+}
 
 int PhoneNumberListModel::rowCount(const QModelIndex &parent) const
 {
@@ -13,7 +16,7 @@ int PhoneNumberListModel::rowCount(const QModelIndex &parent) const
 
 QHash<int, QByteArray> PhoneNumberListModel::roleNames() const
 {
-    return { {Phone, "phone"} };
+    return {{Phone, "phone"}};
 }
 
 QVariant PhoneNumberListModel::data(const QModelIndex &index, int role) const
@@ -24,10 +27,12 @@ QVariant PhoneNumberListModel::data(const QModelIndex &index, int role) const
     const auto LocationInfo = PhoneListModel.locationInfo;
     std::string provinceCarrier{"未知地区"};
 
-    if (LocationInfo != nullptr) {
+    if (LocationInfo != nullptr)
+    {
         provinceCarrier = LocationInfo->province + " - " + LocationInfo->carrier;
     }
-    switch (role) {
+    switch (role)
+    {
     case Phone:
         return QString::fromStdString(PhoneListModel.phone + " - " + provinceCarrier);
     default:
@@ -60,28 +65,56 @@ std::vector<PhoneListModel> &PhoneNumberListModel::getPhoneDatas()
     return this->phoneDatas;
 }
 
-void PhoneNumberListModel::deduplicate()
+void PhoneNumberListModel::deduplicate(std::function<void()> &&doneCallback)
 {
     beginResetModel();
-    std::unordered_set<std::string_view> seen;
-    std::vector<PhoneListModel> result;
 
-    result.reserve(phoneDatas.size());
+    QObject::connect(this, &PhoneNumberListModel::signalDeduplicateSuccessful, this, [callback = std::move(doneCallback), this]()
+                     { 
+                        endResetModel();
+                        callback(); });
 
-    for (const auto& item : phoneDatas) {
-        if (seen.insert(item.phone).second) {  // 第一次出现
-            result.push_back(item);
-        }
-    }
+    std::thread{[this]()
+                {
+                    const auto instanceDialog = InstanceDialog::getInstance();
+                    instanceDialog->setLoadingDialogShow(true);
+                    int64_t pSize = phoneDatas.size();
+                    double processSize{0};
 
-    phoneDatas = std::move(result);
-    endResetModel();
+                    std::unordered_set<std::string_view> seen;
+                    std::vector<PhoneListModel> result;
+
+                    result.reserve(pSize);
+
+                    int64_t timestamp{0};
+
+                    for (const auto &item : phoneDatas)
+                    {
+                        if (seen.insert(item.phone).second)
+                        { // 第一次出现
+                            result.push_back(item);
+                        }
+                        processSize++;
+                        if (auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                            ms - timestamp > 2000)
+                        {
+                            timestamp = ms;
+                            instanceDialog->setLoadingDialogProcressValue(processSize / pSize);
+                        }
+                    }
+                    phoneDatas = std::move(result);
+                    instanceDialog->setLoadingDialogShow(false);
+                    emit signalDeduplicateSuccessful();
+                }}
+        .detach();
 }
 
-bool isValidPhone(const std::string& s)
+bool isValidPhone(const std::string &s)
 {
-    if (s.size() != 11) return false;
-    if (s[0] != '1') return false;
+    if (s.size() != 11)
+        return false;
+    if (s[0] != '1')
+        return false;
 
     return std::all_of(s.begin(), s.end(), ::isdigit);
 }
@@ -92,12 +125,14 @@ std::string normalize(std::string s)
     s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
 
     // 去 +86
-    if (s.rfind("+86", 0) == 0) {
+    if (s.rfind("+86", 0) == 0)
+    {
         s = s.substr(3);
     }
 
     // 去 86
-    if (s.rfind("86", 0) == 0) {
+    if (s.rfind("86", 0) == 0)
+    {
         s = s.substr(2);
     }
 

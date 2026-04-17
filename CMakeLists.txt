@@ -23,7 +23,7 @@ qt_add_qml_module(appWanchengsBatchMobileNumberOrganization
     URI WanchengsBatchMobileNumberOrganization
     QML_FILES
         Main.qml
-        QML_FILES UnionButton.qml LoadingDialog.qml
+        QML_FILES UnionButton.qml LoadingDialog.qml CustomProgressBar.qml
         SOURCES include/theme.h src/theme.cpp
         RESOURCES sources.qrc
         SOURCES include/InstanceTheme.h src/InstanceTheme.cpp
