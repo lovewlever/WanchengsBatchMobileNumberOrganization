@@ -8,8 +8,6 @@
 #include <filesystem>
 #include <regex>
 
-
-
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
     return phoneNumberListModelPtr;
@@ -58,9 +56,15 @@ PhoneNumberImportrer::PhoneNumberImportrer(QObject *parent) : QObject(parent),
 
     std::thread{[this]()
                 {
-                   csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
+                    csvPhoneLocationLoaderPtr->loadPhoneLocationCSV();
                 }}
         .detach();
+
+    // 手机号加载成功的信号 刷新ui
+    QObject::connect(this, &PhoneNumberImportrer::signalPhoneLoaded, this, [this]()
+                     {
+        this->phoneNumberListModelPtr->setPhoneDatas(std::move(phonesTemp));
+        InstanceDialog::getInstance()->setLoadingDialogShow(false); });
 }
 
 PhoneNumberImportrer::~PhoneNumberImportrer()
@@ -75,7 +79,8 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
     std::filesystem::path fsPath{path};
     const auto extStr = fsPath.extension().string();
     std::regex regex{R"(\.(txt|text)$)", std::regex::icase};
-    if (!std::regex_search(extStr.begin(), extStr.end(), regex)) {
+    if (!std::regex_search(extStr.begin(), extStr.end(), regex))
+    {
         qDebug() << "不支持的文件";
         InstanceDialog::getInstance()->setReminderDialogShowContent(true, "不支持的文件");
         return;
@@ -83,11 +88,6 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
 
     InstanceDialog::getInstance()->setLoadingDialogShow(true);
 
-    QObject::connect(this, &PhoneNumberImportrer::signalPhoneLoaded, this, [this] () {
-        this->phoneNumberListModelPtr->setPhoneDatas(std::move(phonesTemp));
-        InstanceDialog::getInstance()->setLoadingDialogShow(false);
-    });
-    
     std::thread{[variant, this]()
                 {
                     QUrl qurl = variant.toUrl();
@@ -102,7 +102,6 @@ void PhoneNumberImportrer::importPhoneFile(const QVariant &variant)
                     emit signalPhoneLoaded();
                 }}
         .detach();
-    
 }
 
 void PhoneNumberImportrer::cleanPhone()
@@ -120,11 +119,10 @@ void PhoneNumberImportrer::phoneDisorder()
 
 void PhoneNumberImportrer::phoneDeduplication()
 {
-    this->phoneNumberListModelPtr->deduplicate([this] () {
+    this->phoneNumberListModelPtr->deduplicate([this]()
+                                               {
         setPhoneNumber(this->phoneNumberListModelPtr->getPhoneDatas().size());
-        setTopMsg("号码已去重处理");
-    });
-    
+        setTopMsg("号码已去重处理"); });
 }
 
 void PhoneNumberImportrer::removeNonPhoneNumbers()
@@ -134,11 +132,11 @@ void PhoneNumberImportrer::removeNonPhoneNumbers()
     setTopMsg("已移除非手机号");
 }
 
-
 void PhoneNumberImportrer::exportByRegion()
 {
     const auto phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
-    if (phoneDatas.empty()) {
+    if (phoneDatas.empty())
+    {
         InstanceDialog::getInstance()->setReminderDialogShowContent(true, "没有可导出的号码");
         return;
     }
@@ -148,7 +146,8 @@ void PhoneNumberImportrer::exportByRegion()
 Q_INVOKABLE void PhoneNumberImportrer::exportByCarrier()
 {
     const auto phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
-    if (phoneDatas.empty()) {
+    if (phoneDatas.empty())
+    {
         InstanceDialog::getInstance()->setReminderDialogShowContent(true, "没有可导出的号码");
         return;
     }

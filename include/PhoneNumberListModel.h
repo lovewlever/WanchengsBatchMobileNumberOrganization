@@ -37,6 +37,7 @@ public:
 
 private:
 
+    bool isSignalDeduplicateSuccessfulConnect{false};
     std::vector<PhoneListModel> phoneDatas;
 
     enum RoleNames {

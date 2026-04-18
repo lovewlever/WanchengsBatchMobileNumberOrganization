@@ -173,5 +173,5 @@ bool TextFileLoader::openFile(const QString& filePath)
         qFatal() << "文件打开失败";
         return false;
     }
-    return false;
+    return true;
 }

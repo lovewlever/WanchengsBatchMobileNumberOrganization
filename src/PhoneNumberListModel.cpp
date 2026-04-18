@@ -69,10 +69,14 @@ void PhoneNumberListModel::deduplicate(std::function<void()> &&doneCallback)
 {
     beginResetModel();
 
-    QObject::connect(this, &PhoneNumberListModel::signalDeduplicateSuccessful, this, [callback = std::move(doneCallback), this]()
+    if (!isSignalDeduplicateSuccessfulConnect) {
+        isSignalDeduplicateSuccessfulConnect = true;
+        QObject::connect(this, &PhoneNumberListModel::signalDeduplicateSuccessful, this, [callback = std::move(doneCallback), this]()
                      { 
                         endResetModel();
                         callback(); });
+    }
+    
 
     std::thread{[this]()
                 {
