@@ -91,3 +91,9 @@ std::pair<bool, std::string> ExportPhoneNumber::exportByCarrier(std::vector<Phon
 
     return std::pair<bool, std::string>();
 }
+
+std::pair<bool, std::string> ExportPhoneNumber::exportByInBatch(std::vector<PhoneListModel> &phones, const QVariant& variant)
+{
+    const auto iit = variant.toInt();
+    return std::pair<bool, std::string>();
+}

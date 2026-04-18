@@ -154,20 +154,16 @@ Window {
         }
 
         RowLayout {
+        
             UnionButton {
-                btnText: "按号段导出"
-                Layout.preferredHeight: 35
-            }
-
-            UnionButton {
-                btnText: "按照地区导出"
+                btnText: "按地区导出"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
                     objPhoneNumberImporter.exportByRegion();
                 }
             }
             UnionButton {
-                btnText: "按照运营商导出"
+                btnText: "按运营商导出"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
                     objPhoneNumberImporter.exportByCarrier();
@@ -177,6 +173,28 @@ Window {
             UnionButton {
                 btnText: "分批导出"
                 Layout.preferredHeight: 35
+                onClickedX: function () {
+                    let component = Qt.createComponent("InputExportInBatchNumberDialog.qml")
+                    console.log(component.errorString());
+                    if (component.status == Component.Ready) {
+                        let obj = component.createObject(window);
+                        obj.okClick.connect(function (number) {
+                            obj.destroy()
+                            objPhoneNumberImporter.exportByInBatch(number)
+                        });
+                        obj.cancelClick.connect(function () {
+                            obj.destroy()
+                        });
+                    }
+                }
+            }
+
+            UnionButton {
+                btnText: "全部导出"
+                Layout.preferredHeight: 35
+                onClickedX: function () {
+                    
+                }
             }
         }
     }

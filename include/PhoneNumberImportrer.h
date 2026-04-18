@@ -81,6 +81,11 @@ public:
      */
     Q_INVOKABLE void exportByCarrier();
 
+    /**
+     * 分批导出
+     */
+    Q_INVOKABLE void exportByInBatch(const QVariant& variant);
+
     PhoneNumberListModel *getPhoneNumberListModelPtr() const;
     void setPhoneNumberListModelPtr(PhoneNumberListModel *newPhoneNumberListModelPtr);
 
