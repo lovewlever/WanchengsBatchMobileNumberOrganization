@@ -51,7 +51,43 @@ std::pair<bool, std::string> ExportPhoneNumber::exportByRegion(std::vector<Phone
     return std::pair<bool, std::string>();
 }
 
-std::pair<bool, std::string> ExportPhoneNumber::exportByCarrier()
+std::pair<bool, std::string> ExportPhoneNumber::exportByCarrier(std::vector<PhoneListModel> &phones)
 {
+    std::unordered_map<std::string_view, std::vector<PhoneListModel *>> regionMap{};
+    for (auto &model : phones)
+    {
+        const auto &li = model.locationInfo;
+        if (li == nullptr)
+        {
+            regionMap["未知运营商"].emplace_back(&model);
+        }
+        else
+        {
+            regionMap[model.locationInfo->carrier].emplace_back(&model);
+        }
+    }
+
+    const auto sizet = regionMap.size();
+
+    for (const auto &pair : regionMap)
+    {
+        {
+            const auto& vecs = pair.second;
+            if (vecs.empty()) continue;
+            std::ofstream fsWriter{std::string{"/Users/lovewlever/Downloads/" + std::string{pair.first} + ".txt"}, std::ios_base::out};
+            if (fsWriter.is_open())
+            {
+                for (const auto &plModel : pair.second)
+                {
+                    if (plModel != nullptr) {
+                        fsWriter << plModel->phone << "\n";
+                    }
+                    
+                }
+                fsWriter.flush();
+            }
+        }
+    }
+
     return std::pair<bool, std::string>();
 }

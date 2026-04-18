@@ -22,7 +22,7 @@ public:
     /**
      * 按照运营商导出
      */
-    std::pair<bool, std::string> exportByCarrier();
+    std::pair<bool, std::string> exportByCarrier(std::vector<PhoneListModel> &phones);
 };
 
 #endif // EXPORTPHONENUMBER_H
