@@ -9,7 +9,6 @@
 #include <regex>
 
 
-
 PhoneNumberListModel *PhoneNumberImportrer::getPhoneNumberListModelPtr() const
 {
     return phoneNumberListModelPtr;
@@ -165,4 +164,16 @@ Q_INVOKABLE void PhoneNumberImportrer::exportByInBatch(const QVariant& variant)
         return;
     }
     exportPhoneNumberPtr->exportByInBatch(phoneDatas, variant);
+}
+
+
+Q_INVOKABLE void PhoneNumberImportrer::exportByAll()
+{
+    auto phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
+    if (phoneDatas.empty())
+    {
+        InstanceDialog::getInstance()->setReminderDialogShowContent(true, "没有可导出的号码");
+        return;
+    }
+    exportPhoneNumberPtr->exportByAll(phoneDatas);
 }

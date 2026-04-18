@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(MACOSX_BUNDLE_ICON_FILE MacOS.icns)
+
 
 project(WanchengsBatchMobileNumberOrganization VERSION 0.1 LANGUAGES CXX)
 
@@ -54,6 +56,12 @@ set_target_properties(appWanchengsBatchMobileNumberOrganization PROPERTIES
 target_link_libraries(appWanchengsBatchMobileNumberOrganization
     PRIVATE Qt6::Quick Qt6::QuickControls2
 )
+
+set_source_files_properties(MacOS.icns PROPERTIES
+    MACOSX_PACKAGE_LOCATION "Resources")
+
+target_sources(appWanchengsBatchMobileNumberOrganization PRIVATE MacOS.icns)
+
 
 install(TARGETS appWanchengsBatchMobileNumberOrganization
     BUNDLE DESTINATION .

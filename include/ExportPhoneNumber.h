@@ -30,6 +30,10 @@ public:
      */
     std::pair<bool, std::string> exportByInBatch(std::vector<PhoneListModel> &phones, const QVariant& variant);
 
+    /**
+     * 全部导出
+     */
+    std::pair<bool, std::string> exportByAll(std::vector<PhoneListModel>& phones);
 };
 
 #endif // EXPORTPHONENUMBER_H

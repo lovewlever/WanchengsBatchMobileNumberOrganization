@@ -9,7 +9,7 @@ Window {
     width: 640
     height: 640
     visible: true
-    title: qsTr("WanchengsBatchMobileNumberOrganization")
+    title: qsTr("万成的手机号批量处理")
     color: InstanceTheme.background
 
     property var dropAreaColor: "transparent"
@@ -154,7 +154,7 @@ Window {
         }
 
         RowLayout {
-        
+
             UnionButton {
                 btnText: "按地区导出"
                 Layout.preferredHeight: 35
@@ -174,16 +174,16 @@ Window {
                 btnText: "分批导出"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
-                    let component = Qt.createComponent("InputExportInBatchNumberDialog.qml")
+                    let component = Qt.createComponent("InputExportInBatchNumberDialog.qml");
                     console.log(component.errorString());
                     if (component.status == Component.Ready) {
                         let obj = component.createObject(window);
                         obj.okClick.connect(function (number) {
-                            obj.destroy()
-                            objPhoneNumberImporter.exportByInBatch(number)
+                            obj.destroy();
+                            objPhoneNumberImporter.exportByInBatch(number);
                         });
                         obj.cancelClick.connect(function () {
-                            obj.destroy()
+                            obj.destroy();
                         });
                     }
                 }
@@ -193,7 +193,7 @@ Window {
                 btnText: "全部导出"
                 Layout.preferredHeight: 35
                 onClickedX: function () {
-                    
+                    objPhoneNumberImporter.exportByAll();
                 }
             }
         }
@@ -213,9 +213,9 @@ Window {
 
             onDropped: function (drag) {
                 window.dropAreaColor = "transparent";
-                let filePaths = ""
+                let filePaths = "";
                 for (let i = 0; i < drag.urls.length; i++) {
-                    let url = drag.urls[i]
+                    let url = drag.urls[i];
                     objPhoneNumberImporter.importPhoneFile(url);
                 }
             }
@@ -226,7 +226,5 @@ Window {
         id: idLoadingDialog
     }
 
-    CustomReminderDialog {
-
-    }
+    CustomReminderDialog {}
 }

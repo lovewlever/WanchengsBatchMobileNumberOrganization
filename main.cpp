@@ -3,11 +3,14 @@
 #include <QQuickStyle>
 #include <InstanceTheme.h>
 #include "InstanceDialog.h"
+#include <QIcon>
 
 int main(int argc, char *argv[])
 {
     QQuickStyle::setStyle("Fusion");
     QGuiApplication app(argc, argv);
+
+    app.setWindowIcon(QIcon("qrc:/ic_wan_cheng_logo.png"));
 
     QQmlApplicationEngine engine;
     QObject::connect(
