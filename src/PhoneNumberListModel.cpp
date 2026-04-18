@@ -25,7 +25,7 @@ QVariant PhoneNumberListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     const auto PhoneListModel = phoneDatas[index.row()];
     const auto LocationInfo = PhoneListModel.locationInfo;
-    std::string provinceCarrier{"未知地区"};
+    std::string provinceCarrier{"未知地区 - 未知运营商"};
 
     if (LocationInfo != nullptr)
     {
