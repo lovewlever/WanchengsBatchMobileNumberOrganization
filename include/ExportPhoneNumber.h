@@ -6,6 +6,7 @@
  */
 #include <utility>
 #include <string>
+#include <Structs.h>
 
 class ExportPhoneNumber
 {
@@ -16,7 +17,7 @@ public:
     /**
      * 按照地区导出
      */
-    std::pair<bool, std::string> exportByRegion();
+    std::pair<bool, std::string> exportByRegion(std::vector<PhoneListModel>& phones);
 
     /**
      * 按照运营商导出

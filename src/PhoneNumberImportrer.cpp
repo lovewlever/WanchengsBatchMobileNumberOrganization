@@ -134,13 +134,13 @@ void PhoneNumberImportrer::removeNonPhoneNumbers()
 
 void PhoneNumberImportrer::exportByRegion()
 {
-    const auto phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
+    auto& phoneDatas = phoneNumberListModelPtr->getPhoneDatas();
     if (phoneDatas.empty())
     {
         InstanceDialog::getInstance()->setReminderDialogShowContent(true, "没有可导出的号码");
         return;
     }
-    exportPhoneNumberPtr->exportByRegion();
+    exportPhoneNumberPtr->exportByRegion(phoneDatas);
 }
 
 Q_INVOKABLE void PhoneNumberImportrer::exportByCarrier()

@@ -1,7 +1,7 @@
 ### WanchengsBatchMobileNumberOrganization
 
-1. 支持拖放
-2. 支持导入EXCEL
-2. 支持导入CSV文件
+1. 支持拖放 ✅
+2. 支持导入EXCEL ➡️
+2. 支持导入CSV文件 ➡️
 
 ![](153610.png)
